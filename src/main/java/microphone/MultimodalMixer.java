@@ -1,8 +1,6 @@
 package microphone;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -62,5 +60,17 @@ public class MultimodalMixer {
                 e.printStackTrace();
             }
         }
+    }
+
+    public ArrayList<String> getListOfMicNames(){
+        ArrayList<String> mixerNames = new ArrayList<>();
+        for(Mixer.Info info : mixerInfos){
+            Mixer mixer = AudioSystem.getMixer(info);
+            if (mixer.isLineSupported(Port.Info.MICROPHONE)) {
+                mixerNames.add(mixer.getMixerInfo().getName());
+            }
+        }
+
+        return mixerNames;
     }
 }
