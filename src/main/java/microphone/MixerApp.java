@@ -12,29 +12,14 @@ import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 
-import javax.sound.sampled.*;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class MixerTest extends Application {
+public class MixerApp extends Application {
     JMetro jMetro = new JMetro(Style.LIGHT);
-
 
     public static void main(String[] args) {
         launch(args);
-        // microphoneTest(); // test recording :)
-    }
-
-    /**
-     * Practice microphone and mixer with JavaSound API
-     */
-    private static void microphoneTest(){
-        try {
-            MicrophonePractice microphone = new MicrophonePractice();
-            microphone.sourceDataLine(5000);
-            // microphone.recordTest();
-        }
-        catch (IOException | UnsupportedAudioFileException e){ e.printStackTrace();}
     }
 
     @Override
@@ -43,12 +28,9 @@ public class MixerTest extends Application {
 
         stage.setTitle("Multimodal Audio Mixer");
 
-        MultimodalMixer multimodalMixer = new MultimodalMixer();
-        ArrayList<String> micsList = multimodalMixer.getListOfMicNames();
-
         // Components
         ChoiceBox<String> listOfMics = new ChoiceBox<>();
-        listOfMics.getItems().addAll(micsList);
+        listOfMics.getItems().addAll(getAllMicrophonesName());
         Label label = new Label("Select a microphone input");
         Button listenButton = new Button("Listen"); // Open target data line
         Button pauseButton = new Button("Pause"); // Close target data line
@@ -66,5 +48,11 @@ public class MixerTest extends Application {
         jMetro.setScene(scene);
         stage.setScene(scene);
         stage.show();
+    }
+
+
+    private List<String> getAllMicrophonesName(){
+        MultimodalMixer multimodalMixer = new MultimodalMixer();
+        return multimodalMixer.getInputMixers().stream().map(multimodalMixer::getMixerName).collect(Collectors.toUnmodifiableList());
     }
 }
