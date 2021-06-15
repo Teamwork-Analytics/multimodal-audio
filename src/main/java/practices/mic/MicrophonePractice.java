@@ -1,4 +1,4 @@
-package microphone;
+package practices.mic;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;

@@ -1,4 +1,4 @@
-package main;
+package practices.javafx_practices;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

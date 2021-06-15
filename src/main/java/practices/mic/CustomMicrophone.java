@@ -1,11 +1,10 @@
-package microphone;
+package practices.mic;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class Microphone {
+public class CustomMicrophone {
     private final String id;
     private final AudioFormat recordAudioFormat;
     private final Mixer mixer;
@@ -13,7 +12,7 @@ public class Microphone {
     private final int recordingMilliSeconds = 5000; // TODO: remove it later
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); // automatic adjustable array
 
-    Microphone(String id, Mixer mixer) throws IOException, UnsupportedAudioFileException{
+    public CustomMicrophone(String id, Mixer mixer) throws IOException, UnsupportedAudioFileException{
         this.recordAudioFormat = new AudioFormat(44100f, 16, 1, true, false);
         this.mixer = mixer;
         this.id = id;

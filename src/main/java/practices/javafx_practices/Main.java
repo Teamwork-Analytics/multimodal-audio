@@ -1,4 +1,4 @@
-package main;
+package practices.javafx_practices;
 import javafx.application.Application;
 
 import javafx.scene.Scene; // content inside the window
@@ -36,7 +36,6 @@ public class Main extends Application{
         layout1.getStyleClass().add(JMetroStyleClass.BACKGROUND);
         layout1.getChildren().addAll(label1, button1);
         mainScene = new Scene(layout1, 200, 200);
-
 
         jMetro.setScene(mainScene);
         window.setScene(mainScene);
