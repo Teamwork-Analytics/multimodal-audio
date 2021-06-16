@@ -1,11 +1,11 @@
 package microphone;
 
+import google_api.SpeechToTextAPI;
 import practices.mic.CustomMicrophone;
 
 import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -15,58 +15,40 @@ public class MultimodalMixer {
     private final Mixer.Info[] mixerInfos;
     private final HashMap<String, Mixer> mixerHashMap = new HashMap<>();
     private final ArrayList<Mixer> mixers = new ArrayList<>();
-    private Mixer selectedMixer;
     private final Scanner scanner = new Scanner(System.in);  // Create a Scanner object, TODO: don't use this, see FIT2099 code
+    private final Microphone microphone = new Microphone(AudioFileFormat.Type.WAVE); // FIXME: create a hashmap for multiple mic.
+    private SpeechToTextAPI s2t;
 
-    MultimodalMixer(){
+    MultimodalMixer(SpeechToTextAPI s2t){
         this.mixerInfos = AudioSystem.getMixerInfo(); // get all mixers data
         this.initMixer();
+        this.s2t = s2t;
     }
 
-    public void execute(String mixerName) {
-        // ask user
-//        this.chooseOneMicrophone();
+    public void listen(String mixerName) {
         if(this.selectAMixer(mixerName)){
-
-            // TODO: loop and create thread for each mixer
-            Microphone microphone = new Microphone(AudioFileFormat.Type.WAVE);
-            microphone.initTargetDataLineFromMixer(selectedMixer);
             microphone.open();
-            AudioInputStream audio = new AudioInputStream(microphone.getTargetDataLine());
-
-            new Thread(() -> {
-                int nBytesRead = 0;
-                byte[] trimBuffer;
-                int audioDataLength = 1024;
-                ByteBuffer audioDataBuffer = ByteBuffer.allocate(audioDataLength);
-                audioDataBuffer.order(ByteOrder.LITTLE_ENDIAN);
-                try {
-                    // System.out.println("Inside Stream Player Run method")
-                    int toRead = audioDataLength;
-                    int totalRead = 0;
-
-                    // Reads up a specified maximum number of bytes from audio stream
-                    for (; toRead > 0 && (nBytesRead = audio.read(audioDataBuffer.array(), totalRead,
-                            toRead)) != -1; toRead -= nBytesRead, totalRead += nBytesRead) {
-                    }
-
-
-
-
-//                  System.err.println(totalRead);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }).start();
+            System.out.println("Start listening...");
+            File audioFile = new File("test.wav");
+            microphone.transcribeSpeechToText(s2t);
         }
-
         //spawnMicrophoneRecorder(info.getName(), mixer); // spawn a simple recording system. TEST
+    }
 
+    /**
+     * Stop listening from a  microphone
+     * FIXME: can stop a selected microphone
+     */
+    public void stop(){
+        microphone.close();
+        s2t.transcribe();
+        System.out.println("Stop listening");
     }
 
 
+    /**
+     * Initialise mixer and collect all audio inputs sources
+     */
     private void initMixer(){
         for(Mixer.Info info : mixerInfos){
             Mixer mixer = AudioSystem.getMixer(info);
@@ -86,14 +68,23 @@ public class MultimodalMixer {
         return new ArrayList<>(mixers);
     }
 
+    /**
+     * Choose one mixer input
+     * @param mixerName the name of mixer
+     * @return true/false if the system can find the mixer or not respectively
+     */
     private boolean selectAMixer(String mixerName){
-        Mixer mixer = mixerHashMap.get(mixerName);
-        if(mixer == null) {System.out.println("Cannot find mixer"); return false;}
-        this.selectedMixer = mixer;
+        Mixer selectedMixer = mixerHashMap.get(mixerName);
+        if(selectedMixer == null) {System.out.println("Cannot find mixer"); return false;}
+        microphone.initTargetDataLineFromMixer(selectedMixer);
         return true;
     }
 
-
+    /**
+     * Get the mixer name
+     * @param mixer mixer object
+     * @return mixer name
+     */
     public String getMixerName(Mixer mixer){
         if(mixer == null) return "";
         Mixer.Info info = mixer.getMixerInfo();
@@ -110,7 +101,7 @@ public class MultimodalMixer {
             try {
                 CustomMicrophone microphone = new CustomMicrophone(mixerName, mixer);
                 System.out.println("Start of recording from "+ mixerName);
-                microphone.readTargetDataLine();
+                microphone.open();
                 System.out.println("End of recording...");
                 microphone.listenSourceDataLine();
                 System.out.println("End of sample program");
@@ -120,6 +111,9 @@ public class MultimodalMixer {
         }).start();
     }
 
+    /**
+     * Console log to choose one microphone
+     */
     private void chooseOneMicrophone(){
         int id = 0;
         boolean flag = true;

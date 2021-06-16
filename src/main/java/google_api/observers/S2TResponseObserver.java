@@ -8,16 +8,19 @@ import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 
 import java.util.ArrayList;
 
-public class S2TResponseObserver implements ResponseObserver<StreamingRecognizeResponse> {
+public class S2TResponseObserver<T> implements ResponseObserver<StreamingRecognizeResponse> {
     private ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-    public void onStart(StreamController controller) {}
+    public void onStart(StreamController controller) {
+        System.out.println(controller);
+    }
 
     public void onResponse(StreamingRecognizeResponse response) {
+        System.out.println(response);
         responses.add(response);
         StreamingRecognitionResult result = response.getResultsList().get(0);
         SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-        alternative.getTranscript();
+        System.out.println(alternative.getTranscript());
     }
 
     public void onComplete() {
@@ -29,6 +32,6 @@ public class S2TResponseObserver implements ResponseObserver<StreamingRecognizeR
     }
 
     public void onError(Throwable t) {
-        System.out.println(t);
+        System.out.println(t.getMessage());
     }
 }

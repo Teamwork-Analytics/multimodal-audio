@@ -1,55 +1,70 @@
 package google_api;
 
 import com.google.api.gax.rpc.ClientStream;
-import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.SpeechClient;
-import com.google.cloud.speech.v1.StreamingRecognitionConfig;
-import com.google.cloud.speech.v1.StreamingRecognizeRequest;
+import com.google.api.gax.rpc.ResponseObserver;
+import com.google.api.gax.rpc.StreamController;
+import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
-import google_api.observers.S2TResponseObserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SpeechToTextAPI {
 
-    private S2TResponseObserver responseObserver = null;
+    private ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
     private ClientStream<StreamingRecognizeRequest> clientStream = null;
     private StreamingRecognizeRequest request = null;
 
-    public void initConfig(int numberOfChannels) {
-        try (SpeechClient client = SpeechClient.create()) {
-            // set the response observer
-            responseObserver = new S2TResponseObserver();
+    public void initConfig(SpeechClient client) throws IOException {
 
-            // a very long configuration for speech to text API.
-            clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
+        // set the response observer
+        responseObserver =
+                new ResponseObserver<StreamingRecognizeResponse>() {
+                    ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-            // default
-            String languageCode = "en-AU";
-            int sampleHertz = 16000;
-            RecognitionConfig recognitionConfig =
-                    RecognitionConfig.newBuilder()
-                            .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16) // TODO: need to learn more about this encoding
-                            .setLanguageCode(languageCode)
-                            .setSampleRateHertz(sampleHertz)
-//                          .setAudioChannelCount(numberOfChannels) // open 2 channels
-//                          .setEnableSeparateRecognitionPerChannel(true) // separate the recognition
-                            .build();
+                    public void onStart(StreamController controller) {}
 
-            StreamingRecognitionConfig streamingRecognitionConfig =
-                    StreamingRecognitionConfig.newBuilder()
-                            .setConfig(recognitionConfig)
-                            .build();
+                    public void onResponse(StreamingRecognizeResponse response) {
+                        responses.add(response);
+                    }
 
-            request =
-                    StreamingRecognizeRequest.newBuilder()
-                            .setStreamingConfig(streamingRecognitionConfig)
-                            .build(); // The first request in a streaming call has to be a config
+                    public void onComplete() {
+                        System.out.println(responses);
+                        for (StreamingRecognizeResponse response : responses) {
+                            StreamingRecognitionResult result = response.getResultsList().get(0);
+                            SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                            System.out.printf("Transcript : %s\n", alternative.getTranscript());
+                        }
+                    }
 
-            clientStream.send(request); // send it to the clientStream
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    public void onError(Throwable t) {
+                        System.out.println(t);
+                    }
+                };
+
+        // a very long configuration for speech to text API.
+        this.clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
+
+        // default
+        RecognitionConfig recognitionConfig =
+                RecognitionConfig.newBuilder()
+                        .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16) // TODO: need to learn more about this encoding
+                        .setLanguageCode("en-US")
+                        .setSampleRateHertz(16000)
+                        .build();
+
+        StreamingRecognitionConfig streamingRecognitionConfig =
+                StreamingRecognitionConfig.newBuilder()
+                        .setConfig(recognitionConfig)
+                        .setInterimResults(true)
+                        .build();
+
+        this.request =
+                StreamingRecognizeRequest.newBuilder()
+                        .setStreamingConfig(streamingRecognitionConfig)
+                        .build(); // The first request in a streaming call has to be a config
+
+        this.clientStream.send(request); // send it to the clientStream
     }
 
     public void sendRequest(byte[] audioData){

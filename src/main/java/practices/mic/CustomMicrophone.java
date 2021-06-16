@@ -21,7 +21,7 @@ public class CustomMicrophone {
     /**
      * Using the injected mixer to listen the corresponding microphone
      */
-    public void readTargetDataLine(){
+    public void open(){
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, recordAudioFormat);
         try {
             final TargetDataLine tdl = (TargetDataLine) mixer.getLine(info);
@@ -29,7 +29,7 @@ public class CustomMicrophone {
             Thread targetThread = generateAudioReadingThread(tdl);
             targetThread.start();
             Thread.sleep(recordingMilliSeconds); //TODO: remove this later
-            this.stopTargetDataLine(tdl);
+            this.close(tdl);
         } catch (IllegalArgumentException e) {
             System.out.println("The input device is not suitable for target data line");
         } catch (InterruptedException | LineUnavailableException e) {
@@ -42,7 +42,7 @@ public class CustomMicrophone {
      * TODO: convert it to button function
      * @param tdl TargetDataLine targetDataLine/mic input
      */
-    private void stopTargetDataLine(TargetDataLine tdl){
+    private void close(TargetDataLine tdl){
         tdl.stop();
         tdl.close();
     }

@@ -1,9 +1,13 @@
 package microphone;
 
-import java.io.Closeable;
-import java.io.File;
+import google_api.SpeechToTextAPI;
 
 import javax.sound.sampled.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+
+import static microphone.Microphone.CaptureState.STARTING_CAPTURE;
 
 /***************************************************************************
  * Microphone class that contains methods to capture audio from microphone
@@ -27,7 +31,7 @@ public class Microphone implements Closeable {
 	/**
 	 * Variable for enum
 	 */
-	CaptureState state;
+	private CaptureState state;
 
 	/**
 	 * Variable for the audios saved file type
@@ -106,7 +110,6 @@ public class Microphone implements Closeable {
 			setTargetDataLine((TargetDataLine) AudioSystem.getLine(dataLineInfo));
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
@@ -119,7 +122,6 @@ public class Microphone implements Closeable {
 			setTargetDataLine((TargetDataLine) mixer.getLine(dataLineInfo));
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
@@ -139,7 +141,25 @@ public class Microphone implements Closeable {
 
 		// Get Audio
 		new Thread(new CaptureThread()).start();
+	}
 
+	public void transcribeSpeechToText(SpeechToTextAPI s2t){
+		setState(CaptureState.STARTING_CAPTURE);
+		new Thread(() -> {
+			AudioInputStream audio = new AudioInputStream(getTargetDataLine());
+			long startTime = System.currentTimeMillis();
+			try {
+				while (state.equals(STARTING_CAPTURE)) {
+					long estimatedTime = System.currentTimeMillis() - startTime;
+					byte[] data = new byte[6400];
+					audio.read(data);
+					s2t.sendRequest(data); // send to Google API
+				}
+//              AudioSystem.write(audio, AudioFileFormat.Type.WAVE, audioFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	/**
@@ -161,7 +181,7 @@ public class Microphone implements Closeable {
 	 *         microphone
 	 */
 	public AudioFormat getAudioFormat() {
-		float sampleRate = 16000.0F;
+		float sampleRate = 16000;
 		// 8000,11025,16000,22050,44100
 		int sampleSizeInBits = 16;
 		// 8,16
@@ -189,7 +209,6 @@ public class Microphone implements Closeable {
 				getTargetDataLine().start();
 			} catch (LineUnavailableException e) {
 				e.printStackTrace();
-				return;
 			}
 		}
 
@@ -201,8 +220,7 @@ public class Microphone implements Closeable {
 	 * If already closed, this does nothing
 	 */
 	public void close() {
-		if (getState() == CaptureState.CLOSED) {
-		} else {
+		if (getState() != CaptureState.CLOSED) {
 			getTargetDataLine().stop();
 			getTargetDataLine().close();
 			setState(CaptureState.CLOSED);
