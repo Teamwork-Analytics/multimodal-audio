@@ -25,11 +25,11 @@ public class SpeechToTextAPI {
                     public void onStart(StreamController controller) {}
 
                     public void onResponse(StreamingRecognizeResponse response) {
+                        System.out.println(response);
                         responses.add(response);
                     }
 
                     public void onComplete() {
-                        System.out.println(responses);
                         for (StreamingRecognizeResponse response : responses) {
                             StreamingRecognitionResult result = response.getResultsList().get(0);
                             SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
@@ -38,12 +38,12 @@ public class SpeechToTextAPI {
                     }
 
                     public void onError(Throwable t) {
-                        System.out.println(t);
+                       t.printStackTrace();
                     }
                 };
 
         // a very long configuration for speech to text API.
-        this.clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
+        clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
         // default
         RecognitionConfig recognitionConfig =
@@ -56,18 +56,19 @@ public class SpeechToTextAPI {
         StreamingRecognitionConfig streamingRecognitionConfig =
                 StreamingRecognitionConfig.newBuilder()
                         .setConfig(recognitionConfig)
-                        .setInterimResults(true)
                         .build();
 
-        this.request =
+        request =
                 StreamingRecognizeRequest.newBuilder()
                         .setStreamingConfig(streamingRecognitionConfig)
                         .build(); // The first request in a streaming call has to be a config
 
-        this.clientStream.send(request); // send it to the clientStream
+        clientStream.send(request); // send it to the clientStream
     }
 
     public void sendRequest(byte[] audioData){
+        if(request == null) System.out.println("Request is null");
+        if(clientStream == null) System.out.println("ClientStream is null");
         request = StreamingRecognizeRequest.newBuilder()
                 .setAudioContent(ByteString.copyFrom(audioData))
                 .build();

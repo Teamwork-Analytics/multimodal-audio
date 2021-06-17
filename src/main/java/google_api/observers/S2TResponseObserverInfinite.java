@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import static google_api.SpeechToTextInfinite.STREAMING_LIMIT;
 
-public class S2TResponseObserverInfinite<T> implements ResponseObserver<StreamingRecognizeResponse> {
+public class S2TResponseObserverInfinite implements ResponseObserver<StreamingRecognizeResponse> {
     private final ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
     private int resultEndTimeInMS = 0;
     private int restartCounter = 0;

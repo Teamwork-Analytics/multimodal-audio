@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class MixerDriver {
+public class TestMixerDriver {
     public static void main(String[] args) {
         try (SpeechClient client = SpeechClient.create()) {
             SpeechToTextAPI speechToTextAPI = new SpeechToTextAPI();

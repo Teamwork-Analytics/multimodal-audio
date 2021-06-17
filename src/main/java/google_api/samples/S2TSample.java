@@ -35,11 +35,11 @@ public class S2TSample {
 
                         public void onResponse(StreamingRecognizeResponse response) {
                             responses.add(response);
-                            System.out.println(response);
                         }
 
                         public void onComplete() {
                             for (StreamingRecognizeResponse response : responses) {
+                                System.out.println(response);
                                 StreamingRecognitionResult result = response.getResultsList().get(0);
                                 SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
                                 System.out.printf("Transcript : %s\n", alternative.getTranscript());
@@ -61,7 +61,7 @@ public class S2TSample {
                             .setSampleRateHertz(16000)
                             .build();
             StreamingRecognitionConfig streamingRecognitionConfig =
-                    StreamingRecognitionConfig.newBuilder().setConfig(recognitionConfig).setSingleUtterance(true).build();
+                    StreamingRecognitionConfig.newBuilder().setConfig(recognitionConfig).build();
 
             StreamingRecognizeRequest request =
                     StreamingRecognizeRequest.newBuilder()
@@ -108,7 +108,6 @@ public class S2TSample {
 
             File audioFile = new File("test.wav");
 
-            // TODO: Audio Input Stream, it starts here
             long startTime = System.currentTimeMillis();
             AudioInputStream audio = new AudioInputStream(targetDataLine);
             while (true) {

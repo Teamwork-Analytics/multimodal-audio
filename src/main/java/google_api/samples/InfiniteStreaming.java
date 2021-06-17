@@ -18,7 +18,7 @@ package google_api.samples;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1p1beta1.*;
+import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 
