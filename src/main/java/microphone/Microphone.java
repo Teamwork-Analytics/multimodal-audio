@@ -125,24 +125,6 @@ public class Microphone implements Closeable {
 		}
 	}
 
-	/**
-	 * Captures audio from the microphone and saves it a file
-	 *
-	 * @param audioFile The File to save the audio to
-	 * @throws LineUnavailableException
-	 */
-	public void captureAudioToFile(File audioFile) throws LineUnavailableException {
-		setState(CaptureState.STARTING_CAPTURE);
-		setAudioFile(audioFile);
-
-		if (getTargetDataLine() == null) {
-			initTargetDataLine();
-		}
-
-		// Get Audio
-		new Thread(new CaptureThread()).start();
-	}
-
 	public void transcribeSpeechToText(SpeechToTextAPI s2t){
 		setState(CaptureState.STARTING_CAPTURE);
 		new Thread(() -> {
@@ -165,13 +147,30 @@ public class Microphone implements Closeable {
 	/**
 	 * Captures audio from the microphone and saves it a file
 	 *
-	 * @param audioFile The fully path (String) to a file you want to save the audio
+	 * @param audioFileName The fully path (String) to a file you want to save the audio
 	 *                  in
 	 * @throws LineUnavailableException
 	 */
-	public void captureAudioToFile(String audioFile) throws LineUnavailableException {
-		File file = new File(audioFile);
-		captureAudioToFile(file);
+	public void captureAudioToFile(String audioFileName) throws LineUnavailableException {
+		File file = new File(audioFileName);
+		processAudioToFile(file);
+	}
+
+	/**
+	 * Captures audio from the microphone and saves it a file
+	 *
+	 * @param audioFile The File to save the audio to
+	 * @throws LineUnavailableException
+	 */
+	private void processAudioToFile(File audioFile) throws LineUnavailableException {
+		setState(CaptureState.STARTING_CAPTURE);
+		setAudioFile(audioFile);
+
+		if (getTargetDataLine() == null) {
+			initTargetDataLine();
+		}
+		// Get Audio
+		new Thread(new CaptureThread()).start();
 	}
 
 	/**

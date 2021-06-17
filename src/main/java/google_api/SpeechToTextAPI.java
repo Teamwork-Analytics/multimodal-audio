@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class SpeechToTextAPI {
-
+    private SpeechClient speechClient;
     private ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
     private ClientStream<StreamingRecognizeRequest> clientStream = null;
     private StreamingRecognizeRequest request = null;
 
     public void initConfig(SpeechClient client) throws IOException {
-
+        speechClient = client;
         // set the response observer
         responseObserver =
                 new ResponseObserver<StreamingRecognizeResponse>() {
@@ -30,10 +30,14 @@ public class SpeechToTextAPI {
                     }
 
                     public void onComplete() {
-                        for (StreamingRecognizeResponse response : responses) {
-                            StreamingRecognitionResult result = response.getResultsList().get(0);
-                            SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-                            System.out.printf("Transcript : %s\n", alternative.getTranscript());
+                        try{
+                            for (StreamingRecognizeResponse response : responses) {
+                                StreamingRecognitionResult result = response.getResultsList().get(0);
+                                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                                System.out.printf("Transcript : %s\n", alternative.getTranscript());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
 

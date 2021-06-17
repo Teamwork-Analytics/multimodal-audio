@@ -19,7 +19,7 @@ public class MultimodalMixer {
     private final Microphone microphone = new Microphone(AudioFileFormat.Type.WAVE); // FIXME: create a hashmap for multiple mic.
     private SpeechToTextAPI s2t;
 
-    MultimodalMixer(SpeechToTextAPI s2t){
+    public MultimodalMixer(SpeechToTextAPI s2t){
         this.mixerInfos = AudioSystem.getMixerInfo(); // get all mixers data
         this.initMixer();
         this.s2t = s2t;

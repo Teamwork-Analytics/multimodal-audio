@@ -3,7 +3,6 @@ package microphone;
 import com.google.cloud.speech.v1.SpeechClient;
 import google_api.SpeechToTextAPI;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -38,7 +37,7 @@ public class TestMixerDriver {
                 e.printStackTrace();
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
