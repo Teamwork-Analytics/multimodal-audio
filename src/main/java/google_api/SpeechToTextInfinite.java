@@ -12,35 +12,27 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SpeechToTextInfinite {
-    private S2TResponseObserverInfinite<StreamingRecognizeResponse> responseObserver = null;
+    private S2TResponseObserverInfinite responseObserver = null;
     private ClientStream<StreamingRecognizeRequest> clientStream = null;
     private StreamingRecognizeRequest request = null;
     public static final int STREAMING_LIMIT = 290000; // ~5 minutes
     private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
 
-
     private final String languageCode = "en-AU"; // default
     private final int sampleHertz = 16000;
-
-    public SpeechToTextInfinite() {
-
-    }
 
     public void initConfig() {
         try (SpeechClient client = SpeechClient.create()) {
             // set the response observer
-            this.responseObserver = new S2TResponseObserverInfinite<StreamingRecognizeResponse>();
+            responseObserver = new S2TResponseObserverInfinite();
 
-            // a very long configuration for speech to text API.
-            this.clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
+            clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
             RecognitionConfig recognitionConfig =
                     RecognitionConfig.newBuilder()
                             .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16) // TODO: need to learn more about this
                             .setLanguageCode(languageCode)
                             .setSampleRateHertz(sampleHertz)
-                            .setAudioChannelCount(2)
-                            .setEnableSeparateRecognitionPerChannel(true)
                             .build();
 
             StreamingRecognitionConfig streamingRecognitionConfig =
@@ -60,10 +52,15 @@ public class SpeechToTextInfinite {
         }
     }
 
-    public void sendRequest(byte[] data){
+    public ByteString sendRequest(byte[] data){
+        ByteString tempByteString = ByteString.copyFrom(data);
         request = StreamingRecognizeRequest.newBuilder()
-                        .setAudioContent(ByteString.copyFrom(data))
+                        .setAudioContent(tempByteString)
                         .build();
+        return tempByteString;
+    }
+
+    private void sendToClientStream(){
         clientStream.send(request);
     }
 
