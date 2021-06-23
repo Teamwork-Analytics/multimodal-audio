@@ -48,6 +48,15 @@
             <version>11.6.14</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>11</version>
+            <type>pom</type>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/net.sourceforge.javaflacencoder/java-flac-encoder -->
         <dependency>
             <groupId>net.sourceforge.javaflacencoder</groupId>

@@ -9,3 +9,14 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+.idea/
+lib/
+*.iml
+.DS_Store
+env/
+recording-data/
+.idea/libraries/
+.idea/libraries/Maven__org_controlsfx_controlsfx_11_0_0.xml
+.idea/libraries/JavaFX.xml
+.idea/libraries/Maven__org_openjfx_javafx_media_win_11.xml
+.idea/libraries/Maven__org_openjfx_javafx_web_win_11.xml

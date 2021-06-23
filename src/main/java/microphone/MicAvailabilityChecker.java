@@ -1,18 +1,18 @@
 package microphone;
 
-import javax.sound.sampled.LineUnavailableException;
-
 import net.sourceforge.javaflacencoder.FLACFileWriter;
+
+import javax.sound.sampled.LineUnavailableException;
 
 public class MicAvailabilityChecker {
 
 	public static void validateMicAvailability() throws MicUnaccessibleException {
-		Microphone mic = new Microphone(FLACFileWriter.FLAC);
+		Microphone mic = new Microphone(FLACFileWriter.FLAC, "");
 		try {
 			if (mic.getState() != Microphone.CaptureState.CLOSED) {
 				throw new MicUnaccessibleException("Mic didn't successfully initialized");
 			}
-			mic.captureAudioToFile("test.mp3");
+			mic.captureAudioToFile("test.mp3", null);
 			if (mic.getState() != Microphone.CaptureState.PROCESSING_AUDIO || mic.getState() != Microphone.CaptureState.STARTING_CAPTURE) {
 				throw new MicUnaccessibleException("Mic is in use and can't be accessed");
 			}
