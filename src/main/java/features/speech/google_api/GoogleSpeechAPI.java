@@ -1,4 +1,4 @@
-package features.speech.google_speech;
+package features.speech.google_api;
 
 import com.google.cloud.speech.v1.SpeechClient;
 import enums.MicrophoneState;

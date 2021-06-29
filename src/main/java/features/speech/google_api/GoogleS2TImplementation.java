@@ -1,4 +1,4 @@
-package features.speech.google_speech;
+package features.speech.google_api;
 
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;

@@ -1,4 +1,4 @@
-package features.speech.google_speech.infinite_stream;
+package features.speech.google_api.infinite_stream;
 
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static features.speech.google_speech.infinite_stream.SpeechToTextInfinite.STREAMING_LIMIT;
+import static features.speech.google_api.infinite_stream.SpeechToTextInfinite.STREAMING_LIMIT;
 
 public class S2TResponseObserverInfinite implements ResponseObserver<StreamingRecognizeResponse> {
     private final ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();

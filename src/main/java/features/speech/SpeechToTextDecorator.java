@@ -3,7 +3,7 @@ package features.speech;
 import exceptions.MicException;
 import features.Archivable;
 import features.MicrophoneDecorator;
-import features.speech.google_speech.GoogleSpeechAPI;
+import features.speech.google_api.GoogleSpeechAPI;
 import microphone.Microphone;
 import utils.Display;
 import writers.MultimodalFileWriter;

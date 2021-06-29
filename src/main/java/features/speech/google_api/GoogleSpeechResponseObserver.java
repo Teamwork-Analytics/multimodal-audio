@@ -1,4 +1,4 @@
-package features.speech.google_speech;
+package features.speech.google_api;
 
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
@@ -9,8 +9,6 @@ import observers.TranscriptObservable;
 import utils.Display;
 
 import java.util.ArrayList;
-
-import static utils.Display.ColourEnum.WHITE;
 
 public class GoogleSpeechResponseObserver<T> implements ResponseObserver<StreamingRecognizeResponse> {
     private final String channelName;
