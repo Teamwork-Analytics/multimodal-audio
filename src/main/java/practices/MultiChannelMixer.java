@@ -1,4 +1,4 @@
-package mixer;
+package practices;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;

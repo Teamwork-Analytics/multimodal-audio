@@ -1,11 +1,11 @@
-package microphone;
+package microphone.channels;
 
 import java.util.ArrayList;
 
 public class ChannelDivider {
 
-    private byte[] audioBuffer;
-    private int numberOfChannels;
+    private final byte[] audioBuffer;
+    private final int numberOfChannels;
 
 
     /* let's create one buffer per channel and place them in the

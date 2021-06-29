@@ -1,4 +1,4 @@
-package api.google_speech.infinite_stream;
+package features.speech.google_speech.infinite_stream;
 
 import com.google.api.gax.rpc.ClientStream;
 import com.google.cloud.speech.v1.*;
