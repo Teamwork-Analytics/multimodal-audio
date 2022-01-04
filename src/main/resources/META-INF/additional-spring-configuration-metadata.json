@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.application.ui.title",
+      "type": "java.lang.String",
+      "description": "Description for spring.application.ui.title."
+  }
+] }
