@@ -1,7 +1,7 @@
 # Multimodal Analytics Audio
 
 Multimodal audio interface application to collect audio data from multiple microphones. It uses Java Sound API (
-linux/mac) or JasioHost API (windows). We use Google Speech-to-text API (linux only), and Apache Kafka for data
+linux/mac - `not being maintained anymore!`) or JasioHost API (windows). We use Google Speech-to-text API (linux only - `not maintained`), and Apache Kafka for data
 streaming (in progress).
 
 ## Getting Started
@@ -43,7 +43,8 @@ Port number: **7501**
 1. Make sure that the audio web application (`AudioWebApp`) is stopped appropriately before restarting the service (
    use `audio/stop` command above). Otherwise, the ASIO driver will lock the Window's audio services, and you might want
    to restart the whole computer.
-2. In the previous development, we used JavaFX for the UI and uses Linux environment. However, the team decided to
+2. We have tried to save the audio file while it is streaming, but to no avail. It happens because of the nature of `WAV` format. It requires `size` info in its file's heading that cannot be determined when the audio is still streaming. It can only write audio file **after** all data has arrived ([ref1](https://stackoverflow.com/a/33519834), [ref2](https://forums.ni.com/t5/LabVIEW/writing-WAV-file-contyinuously-streaming/td-p/471098)). It poses another challenge that is not worthed to pursue. To cope this issue, the application is currently designed to save all audio files whenever the application crashes. There could be a possibility that the application will crash and it cannot save the audio files as intended. Fortunately, we didn't see such problem in our experiments.      
+3. In the previous development, we used JavaFX for the UI and uses Linux environment. However, the team decided to
    discard it. So, we leave the following documentation if we decide to use JavaFX again:
 
 > DEPRECATED INFORMATION
