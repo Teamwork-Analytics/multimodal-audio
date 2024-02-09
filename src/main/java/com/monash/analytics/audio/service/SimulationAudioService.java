@@ -11,26 +11,31 @@ import java.util.Map;
 
 import static com.monash.analytics.audio.service.utils.DateTime.getDateTimeForFile;
 
-@Service
-public class WindowsAudioServiceAPI implements AudioServiceAPI {
-    private final JasioMixer jasioMixer;
-    private final Map<Integer, String> inputChannels;
-
-    @Autowired
-    public WindowsAudioServiceAPI() throws Exception {
+@Service("simulation")
+public class SimulationAudioService implements AudioServiceAPI {
+    protected final JasioMixer jasioMixer;
+    protected final Map<Integer, String> inputChannels;
+    
+    public SimulationAudioService() throws Exception {
         this.jasioMixer = new JasioMixer();
         inputChannels = new HashMap<>();
         init();
     }
 
-    private void init() throws Exception {
+    /**
+     * This method initalises the number of channels used by the audio interface
+     * If you're using an interface with only two channel - Comment out the additional channels
+     *  as they're being pushed to the inputChannels Map.
+     * @throws Exception
+     */
+    protected void init() throws Exception {
         //FIXME: hard-coded
-        inputChannels.put(0, "RED"); // channel 1
-        inputChannels.put(2, "BLUE"); // channel 3
-        inputChannels.put(4, "GREEN"); // channel 5
-        inputChannels.put(6, "YELLOW"); // channel 7
-        inputChannels.put(8, "WHITE"); // channel 9
-        inputChannels.put(9, "BLACK"); // channel 10
+        inputChannels.put(0, "BLUE"); // channel 1
+        inputChannels.put(1, "RED"); // channel 2
+        inputChannels.put(2, "GREEN"); // channel 3 --> Comment out if using Two Channel Audio Interface.
+        inputChannels.put(3, "YELLOW"); // channel 4 --> Comment out if using Two Channel Audio Interface.
+        inputChannels.put(4, "WHITE"); // channel 5 --> Comment out if using Two Channel Audio Interface.
+        inputChannels.put(5, "BLACK"); // channel 6 --> Comment out if using Two Channel Audio Interface.
         jasioMixer.init(inputChannels);
     }
 
@@ -42,7 +47,7 @@ public class WindowsAudioServiceAPI implements AudioServiceAPI {
      * @throws Exception when something went wrong with the `put` method.
      */
     @Override
-    public void selectAChannel(int channelIndex, String channelName) throws Exception {
+    public void addChannel(int channelIndex, String channelName) throws Exception {
         inputChannels.put(channelIndex, channelName);
     }
 
@@ -63,9 +68,22 @@ public class WindowsAudioServiceAPI implements AudioServiceAPI {
     }
 
     @Override
+    public void stopRecording(Integer index, String customName) throws Exception {
+        jasioMixer.stop(index, customName);
+        Constants.SESSION_TIME = getDateTimeForFile();
+        int printedChannel = index +1;
+        System.out.println("Audio has stopped recording. Saving audio for a single channel " + printedChannel );
+    }
+
+    @Override
     public void shutdown() throws Exception {
         jasioMixer.shutdown();
         System.out.println("Audio system has stopped.");
+    }
+
+    @Override
+    public String getServiceName() {
+        return "simulation";
     }
 
     @PreDestroy
