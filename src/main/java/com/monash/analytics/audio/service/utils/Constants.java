@@ -55,4 +55,7 @@ public class Constants {
      * Allow the playback with the default speaker
      */
     public static boolean SPEAKER_OUT = false;
+
+    public static String AUDIO_DRIVER_BAND_NAME = "Focusrite"; //This is for Focusrite Audio Interface i.e. - Focusrite Scrallet
+    //public static String AUDIO_DRIVER_BAND_NAME = "TASCAM"; //This is for TASCAM Audio Systems (May need to double check)
 }

@@ -1,8 +1,32 @@
 # Multimodal Analytics Audio
+Multimodal Audio interface with TASCAM audio.mixer, Java Sound, Google Speech-to-text API, and Apache Kafka (Producer)
 
 Multimodal audio interface application to collect audio data from multiple microphones. It uses Java Sound API (
 linux/mac - `not being maintained anymore!`) or JasioHost API (windows). We use Google Speech-to-text API (linux only - `not maintained`), and Apache Kafka for data
 streaming (in progress).
+
+## Quick Setup:
+For optimal setup please ensure you're using `IntelliJ Ultimate` Edition and are running `Java 17`.
+
+To get started quickly, follow these steps:
+
+1. Open the terminal within your preferred IDE, ensuring that you're located within the ROOT directory of the project.
+
+2. Run the following command:
+`mvn clean install -U`
+
+Make sure you are in the same directory as the `pom.xml` file.
+This command will rebuild and install all dependencies required for a smooth startup process.
+
+Don't forget to update the `AUDIO_DRIVER_BAND_NAME` variable in `Constants.java` to match the name of the ASIO Driver
+associated with your audio interface. This ensures proper configuration for capturing audio on your system.
+
+Please also ensure you have also installed the ASIO Driver for the given Audio Interface and ensure the ASIO Driver 
+isn't being used by any applications. Please note: The Application installed with the Audio Interface may need to be 
+removed as this library will break if the ASIO Driver is already in use.
+
+Once all of the above has been completed: Run the `AudioWebApp` SpringBoot application
+
 
 ## Getting Started
 
@@ -10,7 +34,7 @@ Please note that we have decided to stop maintaining `LinuxAudioServiceAPI` (e.g
 its dependencies because we are using Windows machine in our experiment. The set up below will focus mainly on Windows
 environment.
 
-This application uses `Java 15`.
+This application uses `Java 17`.
 
 1. Pull all dependencies with Maven via `pom.xml` (at the root).
 2. Follow the installation of JasioHost in [here](https://github.com/mhroth/jasiohost).
@@ -85,3 +109,4 @@ Port number: **7501**
 If you need any help with the set-up, found any issues, or anything, please don't hesitate contacting:
 
 Riordan Dervin Alfredo (e: [riordan.alfredo1@monash.edu]()).
+Antoni Robert Erdeg (e: [antonierdeg@gmail.com]()).

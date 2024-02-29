@@ -10,6 +10,12 @@ import com.synthbot.jasiohost.AsioDriver;
 import com.synthbot.jasiohost.AsioDriverListener;
 import org.springframework.stereotype.Component;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Mixer;
+
+import javax.sound.sampled.Line;
+import javax.sound.sampled.Line.Info;
+
 import javax.sound.sampled.AudioFormat;
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
@@ -28,27 +34,86 @@ public class JasioMixer implements AsioDriverListener {
     private ChannelManager channelManager;
     private ByteArrayOutputStream combinedAudioBaos;
 
+
     public JasioMixer() {
         driverNameList = AsioDriver.getDriverNames();
         asioChannels = new HashSet<>();
         combinedAudioBaos = new ByteArrayOutputStream();
     }
 
+    /**
+     * This method initalises the JasioMixer with the ASIO Driver that corresponds to the
+     * Interface that will be used for the capture of audio for the system
+     * DISCLAIMER - For this to work properly YOU MUST install the ASIO driver for the interface
+     * You need to ensure that the audio device is connected and isn't used by any additional applications otherwise
+     * You will get a Cannot open (AUDIO INTERFACE DRIVER NAME) ASIO. (Error code: 0x54f) i.e.Focusrite USB ASIO.
+     * You may need to uninstall the base interface application installed with the driver.
+     */
     public void init(Map<Integer, String> inputChannelIds) throws Exception {
         if (asioDriver == null) {
-            asioDriver = AsioDriver.getDriver(driverNameList.get(0)); // get the first one, i.e. ASIO4ALL v2
-            registerChannels(inputChannelIds); // register channels
-            sampleRate = asioDriver.getSampleRate();
-            bufferSize = asioDriver.getBufferPreferredSize();
-            //Activate these channels and assign this class as the listener
-            asioDriver.addAsioDriverListener(this);
-            asioDriver.createBuffers(asioChannels);
-            status = MicrophoneState.OPENED;
-            asioDriver.start();
+            boolean foundAudioInterface = false;
+            System.out.println("\n===================================================");
+            System.out.println("List of ASIO Drivers found on this Computer:");
+            System.out.println("===================================================");
+            for (String driverName : driverNameList) {
+                asioDriver = AsioDriver.getDriver(driverName);
+                System.out.println("ASIO Driver Name: " + asioDriver.getName());
+                System.out.println("Number of Channel Inputs: " + asioDriver.getNumChannelsInput());
+                System.out.println("---------------------------------------------------");
+                //Check to see if there ASIO driver has the correct amout of ports and the Driver Name matches the ASIO driver that was found
+                if (isAudioInterface(asioDriver, inputChannelIds)
+                        && detectAudioInterfaces(Constants.AUDIO_DRIVER_BAND_NAME) ) {
+                    foundAudioInterface = true;
+                    System.out.println("ASIO Driver Selected: "+ asioDriver.getName());
+                    System.out.println("---------------------------------------------------\n");
+                    registerChannels(inputChannelIds); // register channels
+                    sampleRate = asioDriver.getSampleRate();
+                    bufferSize = asioDriver.getBufferPreferredSize();
+                    //Activate these channels and assign this class as the listener
+                    asioDriver.addAsioDriverListener(this);
+                    asioDriver.createBuffers(asioChannels);
+                    status = MicrophoneState.OPENED;
+                    asioDriver.start();
+                    break;
+                }
+            }
+            if (!foundAudioInterface) {
+                System.out.println("\u001B[33m"+ "\nNo ASIO driver was found that matches the Excepted Number of Input " +
+                        "Devices. Refer to: " +"\u001B[31m"+ "SimulationAudioService.java"+ "\u001B[33m"+
+                        " for InputChannel count (Input Devices)\nPlease also ensure that the "+ "\u001B[31m" +
+                        "Constants.java variable AUDIO_DRIVER_BAND_NAME" +"\u001B[33m"+ " contains the ASIO Driver Name "+
+                        "used by the Audio Inteface\nIf you can only see Realtek ASIO above it means the driver for the " +
+                        "Audio Inteface's ASIO Driver hasn't been installed yet.\n");
+                throw new Exception("No audio interface and/or ASIO driver is found. Please ensure you have connected"+
+                    " an audio interface and restart the application. Please see JasioMixer.Java for details. "+
+                        "Please also check the above console log");
+            }
         } else {
-            throw new Exception("The ASIO driver is not running.");
+            throw new Exception("The ASIO driver is already running.");
         }
+        }
+
+    private boolean isAudioInterface(AsioDriver driver, Map<Integer, String> inputChannelIds ) {
+        //Check to see if the Audio Driver contains a greater or equal number of excepted input channel for the Interface
+        return driver.getNumChannelsInput() >= inputChannelIds.size();
     }
+
+    public boolean detectAudioInterfaces(String BrandNameOfInterface) {
+        Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
+        for (Mixer.Info mixerInfo : mixerInfos) {
+            // Check the system to see if the Audio Interface Device is connected.
+            if (mixerInfo.getName().toString().contains(BrandNameOfInterface)) {
+                System.out.println("===================================================");
+                System.out.println("Detected Audio Interface: " + mixerInfo.getName());
+                System.out.println("===================================================");
+                return true;
+            }
+        }
+        System.out.println("==============================================================");
+        return false;
+    }
+
+
 
     private void registerChannels(Map<Integer, String> inputChannelIds) throws IllegalArgumentException {
         if (asioDriver != null) {
@@ -144,14 +209,6 @@ public class JasioMixer implements AsioDriverListener {
     public void resetRequest() {
         System.out.println("resetRequest() callback received. Returning driver to INITIALIZED state.");
 
-//        /*
-//         * This thread will attempt to shut down the ASIO driver. However, it will
-//         * block on the AsioDriver object at least until the current method has returned.
-//         */
-//        new Thread(() -> {
-//            System.out.println("resetRequest() callback received. Returning driver to INITIALIZED state.");
-//            asioDriver.returnToState(AsioDriverState.INITIALIZED);
-//        }).start();
     }
 
     @Override
