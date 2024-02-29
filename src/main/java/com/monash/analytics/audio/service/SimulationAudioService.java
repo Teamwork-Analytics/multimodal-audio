@@ -28,9 +28,9 @@ public class SimulationAudioService implements AudioServiceAPI {
         inputChannels.put(0, "BLUE"); // channel 1
         inputChannels.put(1, "RED"); // channel 2
         inputChannels.put(2, "GREEN"); // channel 3
-        inputChannels.put(3, "YELLOW"); // channel 4
-        inputChannels.put(4, "WHITE"); // channel 5
-        inputChannels.put(5, "BLACK"); // channel 6
+//        inputChannels.put(3, "YELLOW"); // channel 4
+//        inputChannels.put(4, "WHITE"); // channel 5
+//        inputChannels.put(5, "BLACK"); // channel 6
         jasioMixer.init(inputChannels);
     }
 

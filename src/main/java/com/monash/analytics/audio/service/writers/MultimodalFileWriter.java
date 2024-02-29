@@ -67,7 +67,8 @@ public abstract class MultimodalFileWriter {
      * @return a string of directory path
      */
     protected String generateDirPath() {
-        String path = System.getProperty("user.dir") + "/" + Constants.DIR_NAME; // get current path + DIR_NAME
+        String path = Constants.ROOT_PATH + "/" + Constants.DIR_NAME;
+//        String path = System.getProperty("user.dir") + "/" + Constants.DIR_NAME; // get current path + DIR_NAME
         path += Constants.SESSION_ID + "/" + subDirName;
         File dir = new File(path);
         if (dir.mkdirs()) {

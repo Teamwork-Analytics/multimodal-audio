@@ -11,7 +11,8 @@ import java.util.Map;
 
 import static com.monash.analytics.audio.service.utils.DateTime.getDateTimeForFile;
 
-@Service
+// UNUSED!
+//@Service
 public class WindowsAudioServiceAPI implements AudioServiceAPI {
     private final JasioMixer jasioMixer;
     private final Map<Integer, String> inputChannels;
@@ -28,9 +29,9 @@ public class WindowsAudioServiceAPI implements AudioServiceAPI {
         inputChannels.put(0, "RED"); // channel 1
         inputChannels.put(2, "BLUE"); // channel 3
         inputChannels.put(4, "GREEN"); // channel 5
-        inputChannels.put(6, "YELLOW"); // channel 7
-        inputChannels.put(8, "WHITE"); // channel 9
-        inputChannels.put(9, "BLACK"); // channel 10
+//        inputChannels.put(6, "YELLOW"); // channel 7
+//        inputChannels.put(8, "WHITE"); // channel 9
+//        inputChannels.put(9, "BLACK"); // channel 10
         jasioMixer.init(inputChannels);
     }
 
@@ -42,7 +43,7 @@ public class WindowsAudioServiceAPI implements AudioServiceAPI {
      * @throws Exception when something went wrong with the `put` method.
      */
     @Override
-    public void selectAChannel(int channelIndex, String channelName) throws Exception {
+    public void addChannel(int channelIndex, String channelName) throws Exception {
         inputChannels.put(channelIndex, channelName);
     }
 
@@ -63,9 +64,21 @@ public class WindowsAudioServiceAPI implements AudioServiceAPI {
     }
 
     @Override
+    public void stopRecording(Integer channelIndex, String customName) throws Exception {
+        jasioMixer.stop(channelIndex,customName);
+        Constants.SESSION_TIME = getDateTimeForFile();
+        System.out.println("Audio has stopped recording.");
+    }
+
+    @Override
     public void shutdown() throws Exception {
         jasioMixer.shutdown();
         System.out.println("Audio system has stopped.");
+    }
+
+    @Override
+    public String getServiceName() {
+        return null;
     }
 
     @PreDestroy
