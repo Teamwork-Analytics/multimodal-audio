@@ -11,7 +11,7 @@ public interface AudioServiceAPI {
      * @param channelNumber integer index in a list: 0 is channel 1, and 1 is channel 2, and so on
      * @param channelName   a String custom channel name if not provided
      */
-    void selectAChannel(int channelNumber, String channelName) throws Exception;
+    void addChannel(int channelNumber, String channelName) throws Exception;
 
     /**
      * Start the recording
@@ -21,11 +21,18 @@ public interface AudioServiceAPI {
     void startRecording(String sessionId, String sessionType) throws Exception;
 
     /**
-     * Pause recording
+     * Stop recording, save all
      *
      * @throws Exception
      */
     void stopRecording() throws Exception;
+
+    /**
+     * Stop recording, save one
+     *
+     * @throws Exception
+     */
+    void stopRecording(Integer channelIndex, String customName) throws Exception;
 
     /**
      * Completely stop the audio service (mixer).
@@ -34,9 +41,12 @@ public interface AudioServiceAPI {
      */
     void shutdown() throws Exception;
 
+
+    String getServiceName();
+
     default String timestamp(String status) {
         return String.format("%s audio %s at %s", SESSION_TYPE, status, SESSION_TIME);
     }
 
-    ;
+
 }

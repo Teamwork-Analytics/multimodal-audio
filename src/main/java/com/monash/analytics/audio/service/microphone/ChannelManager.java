@@ -1,5 +1,6 @@
 package com.monash.analytics.audio.service.microphone;
 
+import com.monash.analytics.audio.service.AudioServiceAPI;
 import com.monash.analytics.audio.service.exceptions.MicException;
 import com.monash.analytics.audio.service.microphone.channels.Channel;
 
@@ -42,6 +43,10 @@ public class ChannelManager {
         for (Channel channel : channels.values()) {
             channel.saveToAudioFile(audioFormat);
         }
+    }
+
+    public void saveSingleChannel(AudioFormat audioFormat, Integer index, String customChannelName){
+        channels.get(index).saveToAudioFile(audioFormat, customChannelName);
     }
 
     /**

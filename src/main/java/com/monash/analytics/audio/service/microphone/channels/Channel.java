@@ -114,6 +114,13 @@ public final class Channel {
         }).start();
     }
 
+    public void saveToAudioFile(AudioFormat inputFormat, String nameOfTheChannel) {
+        new Thread(() -> {
+            MultimodalFileWriter fileWriter = new AudioMicrophoneFileWriter(nameOfTheChannel, inputFormat, baos);
+            fileWriter.saveFile();
+        }).start();
+    }
+
     public void clear(){
         channelQueue = new LinkedBlockingQueue<>();
     }

@@ -77,6 +77,13 @@ public class JasioMixer implements AsioDriverListener {
         combinedAudioBaos = new ByteArrayOutputStream();
     }
 
+    public void stop(Integer channelId, String customName){
+        this.save(channelId, customName);
+        status = MicrophoneState.CLOSED;
+        channelManager.reset();
+        combinedAudioBaos = new ByteArrayOutputStream();
+    }
+
     public void start() throws Exception {
         if (asioChannels.isEmpty()) throw new Exception(" AsioChannels are empty.");
         if (asioDriver == null) throw new NullPointerException("Missing ASIO driver. Please restart the audio service");
@@ -93,6 +100,19 @@ public class JasioMixer implements AsioDriverListener {
             status = MicrophoneState.CLOSED;
         } else {
             throw new Exception("The ASIO driver is not running.");
+        }
+    }
+
+    private void save(int index, String customChannelName){
+        if (asioDriver != null) {
+            AudioFormat audioFormat = new AudioFormat(
+                    (float) sampleRate,
+                    Constants.BIT_DEPTH,
+                    1,
+                    true,
+                    false);
+            channelManager.saveSingleChannel(audioFormat,index, customChannelName);
+            this.saveCombinedChannels(audioFormat);
         }
     }
 
