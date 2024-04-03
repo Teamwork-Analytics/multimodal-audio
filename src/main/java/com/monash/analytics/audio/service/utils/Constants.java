@@ -54,6 +54,6 @@ public class Constants {
      */
     public static boolean SPEAKER_OUT = false;
 
-    public static String AUDIO_DRIVER_BAND_NAME = "Focusrite"; //This is for Focusrite Audio Interface i.e. - Focusrite Scrallet
-    //public static String AUDIO_DRIVER_BAND_NAME = "TASCAM"; //This is for TASCAM Audio Systems (May need to double check)
+    public static String AUDIO_DEVICE_BAND_NAME_MODEL = "US-16x08"; //This is for TASCAM US-16x08 Audio Interface
+    //public static String AUDIO_DEVICE_BAND_NAME_MODEL = "Focusrite"; //This is for the - Focusrite Scrallet Audio Systems
 }

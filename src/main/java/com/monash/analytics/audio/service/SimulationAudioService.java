@@ -33,9 +33,9 @@ public class SimulationAudioService implements AudioServiceAPI {
         inputChannels.put(0, "BLUE"); // channel 1
         inputChannels.put(1, "RED"); // channel 2
         inputChannels.put(2, "GREEN"); // channel 3 --> Comment out if using Two Channel Audio Interface.
-        inputChannels.put(3, "YELLOW"); // channel 4 --> Comment out if using Two Channel Audio Interface.
-        inputChannels.put(4, "WHITE"); // channel 5 --> Comment out if using Two Channel Audio Interface.
-        inputChannels.put(5, "BLACK"); // channel 6 --> Comment out if using Two Channel Audio Interface.
+        //inputChannels.put(3, "YELLOW"); // channel 4 --> Comment out if using Two Channel Audio Interface.
+        //inputChannels.put(4, "WHITE"); // channel 5 --> Comment out if using Two Channel Audio Interface.
+        //inputChannels.put(5, "BLACK"); // channel 6 --> Comment out if using Two Channel Audio Interface.
         jasioMixer.init(inputChannels);
     }
 

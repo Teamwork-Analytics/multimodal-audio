@@ -62,7 +62,7 @@ public class JasioMixer implements AsioDriverListener {
                 System.out.println("---------------------------------------------------");
                 //Check to see if there ASIO driver has the correct amout of ports and the Driver Name matches the ASIO driver that was found
                 if (isAudioInterface(asioDriver, inputChannelIds)
-                        && detectAudioInterfaces(Constants.AUDIO_DRIVER_BAND_NAME) ) {
+                        && detectAudioInterfaces(Constants.AUDIO_DEVICE_BAND_NAME_MODEL) ) {
                     foundAudioInterface = true;
                     System.out.println("ASIO Driver Selected: "+ asioDriver.getName());
                     System.out.println("---------------------------------------------------\n");
@@ -82,11 +82,11 @@ public class JasioMixer implements AsioDriverListener {
                         "Devices. Refer to: " +"\u001B[31m"+ "SimulationAudioService.java"+ "\u001B[33m"+
                         " for InputChannel count (Input Devices)\nPlease also ensure that the "+ "\u001B[31m" +
                         "Constants.java variable AUDIO_DRIVER_BAND_NAME" +"\u001B[33m"+ " contains the ASIO Driver Name "+
-                        "used by the Audio Inteface\nIf you can only see Realtek ASIO above it means the driver for the " +
-                        "Audio Inteface's ASIO Driver hasn't been installed yet.\n");
+                        "used by the Audio Inteface\n Make sure to install ASIO4ALL on your device \n");
                 throw new Exception("No audio interface and/or ASIO driver is found. Please ensure you have connected"+
                     " an audio interface and restart the application. Please see JasioMixer.Java for details. "+
-                        "Please also check the above console log");
+                        "Please also check the above console log and ensure the device name and/or model was deleted "+
+                        " within the list");
             }
         } else {
             throw new Exception("The ASIO driver is already running.");
@@ -100,7 +100,10 @@ public class JasioMixer implements AsioDriverListener {
 
     public boolean detectAudioInterfaces(String BrandNameOfInterface) {
         Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
+        System.out.println("List of Active Devices Detected Above ASIO Driver:");
         for (Mixer.Info mixerInfo : mixerInfos) {
+
+            System.out.println("- " +mixerInfo.getName().toString());
             // Check the system to see if the Audio Interface Device is connected.
             if (mixerInfo.getName().toString().contains(BrandNameOfInterface)) {
                 System.out.println("===================================================");
