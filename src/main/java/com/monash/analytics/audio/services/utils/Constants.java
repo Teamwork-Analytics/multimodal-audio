@@ -24,7 +24,7 @@ public class Constants {
      */
     public static String SESSION_TYPE = ""; // simulation is "", baseline is "baseline"
 
-    public static String ROOT_PATH = "C:\\develop"; // System.getProperty("user.dir")
+    public static String ROOT_PATH = "C:\\Users\\Teamwork Analytics\\Documents"; // System.getProperty("user.dir")
 
     /**
      * Default directory name to record all of data locally
@@ -56,6 +56,6 @@ public class Constants {
      */
     public static boolean SPEAKER_OUT = false;
 
-    public static String AUDIO_DRIVER_BAND_NAME = "Focusrite"; //This is for Focusrite Audio Interface i.e. - Focusrite Scrallet
-    //public static String AUDIO_DRIVER_BAND_NAME = "TASCAM"; //This is for TASCAM Audio Systems (May need to double check)
+//    public static String AUDIO_DRIVER_BAND_NAME = "Focusrite"; //This is for Focusrite Audio Interface i.e. - Focusrite Scrallet
+    public static String AUDIO_DRIVER_BAND_NAME = "US-16x08"; //This is for TASCAM Audio Systems (May need to double check)
 }

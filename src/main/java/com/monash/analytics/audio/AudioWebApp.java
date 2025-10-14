@@ -8,6 +8,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 public class AudioWebApp {
     public static void main(String[] args) {
+        System.out.println(System.getProperty("java.library.path"));
+
         SpringApplication.run(AudioWebApp.class, args);
     }
 }

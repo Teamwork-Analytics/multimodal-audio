@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000"}) // TODO: make sure that this IP address is main PC's IP
+@CrossOrigin(origins = {"*", "http://localhost:3000"}) // TODO: make sure that this IP address is main PC's IP
 @RequestMapping(value = "/audio")
 public class AudioWebController {
     /**
